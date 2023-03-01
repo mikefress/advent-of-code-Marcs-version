@@ -1,30 +1,30 @@
 const fs = require("fs");
-const input = fs.readFileSync("./input.txt", "utf8").trim().split("");
+const directions = fs.readFileSync("./input.txt", "utf8").trim().split("");
 
 function updateLocation(location, direction) {
-    if(direction === "^"){
+    if(direction === "^") {
       location[1]++;
     }
-    if(direction === "v"){
+    if(direction === "v") {
       location[1]--;
     }
-    if(direction === "<"){
+    if(direction === "<") {
       location[0]--;
     }
-    if(direction === ">"){
+    if(direction === ">") {
       location[0]++;
     }
     return location;
 }
 
-function visitHouses(input, useBot) {
-  let locationSanta = [0, 0];
-  let locationBot = [0, 0];
-  let visits = {
+function visitHouses(directions, useBot = false) {
+  const locationSanta = [0, 0];
+  const locationBot = [0, 0];
+  const visits = {
     "[0,0]": 2
-  }
+  };
 
-  input.forEach((direction, index) => {
+  directions.forEach((direction, index) => {
     let currentLocation = [];
     if (useBot && (index % 2 !== 0)) {
       currentLocation = updateLocation(locationBot, direction);
@@ -32,14 +32,15 @@ function visitHouses(input, useBot) {
       currentLocation = updateLocation(locationSanta, direction);
     }
 
-    if (!visits[JSON.stringify(currentLocation)]) {
+    let visit = visits[JSON.stringify(currentLocation)];
+    if (!visit) {
       visits[JSON.stringify(currentLocation)] = 1;
     } else {
-      visits[JSON.stringify(currentLocation)]++;
+      visit++;
     }
   });
   return(Object.keys(visits).length);
 }
 
-console.log(`By himself, Santa visits ${visitHouses(input)} houses!`)
-console.log(`Santa and his little helper visit ${visitHouses(input, true)} houses!`);
+console.log(`By himself, Santa visits ${visitHouses(directions)} houses!`);
+console.log(`Santa and his little helper visit ${visitHouses(directions, true)} houses!`);
